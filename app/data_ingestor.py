@@ -1,9 +1,13 @@
 import os
 import json
+import pandas as pd
 
 class DataIngestor:
     def __init__(self, csv_path: str):
         # TODO: Read csv from csv_path
+        self.data = pd.read_csv(csv_path)
+
+        a = self.data.loc[self.data['Question'] == 'Percent of adults aged 18 years and older who have an overweight classification'].groupby('LocationDesc')['Data_Value'].mean().sort_values(ascending=True).head(5)
 
         self.questions_best_is_min = [
             'Percent of adults aged 18 years and older who have an overweight classification',
@@ -19,3 +23,21 @@ class DataIngestor:
             'Percent of adults who achieve at least 300 minutes a week of moderate-intensity aerobic physical activity or 150 minutes a week of vigorous-intensity aerobic activity (or an equivalent combination)',
             'Percent of adults who engage in muscle-strengthening activities on 2 or more days a week',
         ]
+
+    def create_best5_job(self, question):
+        def best5():
+            print(self.data.loc[self.data['Question'] == question]
+                    .groupby('LocationDesc')['Data_Value']
+                    .mean()
+                    .sort_values(ascending=question in self.questions_best_is_min)
+                    .head(5))
+        return best5
+    
+    def create_worst5_job(self, question):
+        def worst5():
+            print(self.data.loc[self.data['Question'] == question]
+                    .groupby('LocationDesc')['Data_Value']
+                    .mean()
+                    .sort_values(ascending=question in self.questions_best_is_max)
+                    .head(5))
+        return worst5

@@ -64,23 +64,15 @@ def state_mean_request():
 
 @webserver.route('/api/best5', methods=['POST'])
 def best5_request():
-    # TODO
-    # Get request data
-    # Register job. Don't wait for task to finish
-    # Increment job_id counter
-    # Return associated job_id
-
-    return jsonify({"status": "NotImplemented"})
+    webserver.tasks_runner.add_task(webserver.job_counter, webserver.data_ingestor.create_best5_job(request.json['question']))
+    webserver.job_counter += 1
+    return jsonify({"job_id": webserver.job_counter - 1}), 200
 
 @webserver.route('/api/worst5', methods=['POST'])
 def worst5_request():
-    # TODO
-    # Get request data
-    # Register job. Don't wait for task to finish
-    # Increment job_id counter
-    # Return associated job_id
-
-    return jsonify({"status": "NotImplemented"})
+    webserver.tasks_runner.add_task(webserver.job_counter, webserver.data_ingestor.create_worst5_job(request.json['question']))
+    webserver.job_counter += 1
+    return jsonify({"job_id": webserver.job_counter - 1}), 200
 
 @webserver.route('/api/global_mean', methods=['POST'])
 def global_mean_request():
@@ -131,6 +123,12 @@ def state_mean_by_category_request():
     # Return associated job_id
 
     return jsonify({"status": "NotImplemented"})
+
+@webserver.route('/api/graceful_shutdown', methods=['GET'])
+def graceful_shutdown():
+    webserver.tasks_runner.no_more_jobs = True
+    webserver.tasks_runner.join_threads()
+    return jsonify({"status": "OK"})
 
 # You can check localhost in your browser to see what this displays
 @webserver.route('/')

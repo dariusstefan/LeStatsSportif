@@ -5,25 +5,19 @@ import os
 
 class ThreadPool:
     def __init__(self):
-        # You must implement a ThreadPool of TaskRunners
-        # Your ThreadPool should check if an environment variable TP_NUM_OF_THREADS is defined
-        # If the env var is defined, that is the number of threads to be used by the thread pool
-        # Otherwise, you are to use what the hardware concurrency allows
-        # You are free to write your implementation as you see fit, but
-        # You must NOT:
-        #   * create more threads than the hardware concurrency allows
-        #   * recreate threads for each task
-
         self.num_threads = int(os.getenv('TP_NUM_OF_THREADS', os.cpu_count())) - 1
         self.task_queue = Queue()
         self.threads = []
+        self.jobs = {}
         self.graceful_shutdown = Event()
         self.no_more_jobs = False
+        os.makedirs("jobs", exist_ok=True)
 
     def add_task(self, task_id, task):
         if self.no_more_jobs:
             return
         self.task_queue.put((task_id, task))
+        self.jobs[task_id] = 'running'
 
     def get_task(self):
         try:
@@ -51,12 +45,14 @@ class TaskRunner(Thread):
     def run(self):
         while True:
             if self.pool.graceful_shutdown.is_set():
-                print("Shutting down thread " + str(self.ident))
                 break
             task = self.pool.get_task()
             if task is None:
                 continue
             task_id, task = task
-            task()
+            output_file = f"jobs/job{task_id}.json"
+            with open(output_file, "w") as f:
+                f.write(task())
+            self.pool.jobs.update({task_id: 'done'})
 
 

@@ -5,6 +5,7 @@ __pycache__/
 
 results/
 jobs/
+webserver.log*
 
 venv/
 build/

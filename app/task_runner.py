@@ -1,6 +1,5 @@
 from queue import Queue, Empty
 from threading import Thread, Event
-import time
 import os
 
 class ThreadPool:

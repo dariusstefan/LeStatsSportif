@@ -29,7 +29,7 @@ class DataIngestor:
                     .head(5)
                     .to_json())
         return best5
-    
+
     def create_worst5_job(self, question):
         def worst5():
             return (self.data.loc[self.data['Question'] == question]
@@ -48,7 +48,7 @@ class DataIngestor:
                     .sort_values(ascending=question in self.questions_best_is_min)
                     .to_json())
         return states_mean
-    
+
     def create_state_mean_job(self, question, state):
         def state_mean():
             return (self.data.loc[(self.data['Question'] == question) & (self.data['LocationDesc'] == state)]
@@ -56,12 +56,12 @@ class DataIngestor:
                     .mean()
                     .to_json())
         return state_mean
-    
+
     def create_global_mean_job(self, question):
         def global_mean():
             return json.dumps({'global_mean': self.data.loc[self.data['Question'] == question]['Data_Value'].mean()})
         return global_mean
-    
+
     def create_diff_from_mean_job(self, question):
         def diff_from_mean():
             return (self.data.loc[self.data['Question'] == question]['Data_Value'].mean() -
@@ -69,7 +69,7 @@ class DataIngestor:
                   .groupby('LocationDesc', sort=False)['Data_Value']
                   .mean()).to_json()
         return diff_from_mean
-    
+
     def create_state_diff_from_mean_job(self, question, state):
         def state_diff_from_mean():
             return (self.data.loc[self.data['Question'] == question]['Data_Value'].mean() -
@@ -77,7 +77,7 @@ class DataIngestor:
                   .groupby('LocationDesc')['Data_Value']
                   .mean()).to_json()
         return state_diff_from_mean
-    
+
     def create_mean_by_category_job(self, question):
         def mean_by_category():
             return (self.data.loc[self.data['Question'] == question]
@@ -85,7 +85,7 @@ class DataIngestor:
                     .mean()
                     .to_json())
         return mean_by_category
-    
+
     def create_state_mean_by_category_job(self, question, state):
         def state_mean_by_category():
             return (self.data.loc[(self.data['Question'] == question) & (self.data['LocationDesc'] == state)]

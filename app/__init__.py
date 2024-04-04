@@ -1,9 +1,9 @@
-from flask import Flask
-from app.data_ingestor import DataIngestor
-from app.task_runner import ThreadPool
 import logging
 import logging.handlers
 import time
+from flask import Flask
+from app.data_ingestor import DataIngestor
+from app.task_runner import ThreadPool
 
 webserver = Flask(__name__)
 webserver.json.sort_keys = False

@@ -1,10 +1,10 @@
+import os
 from queue import Queue, Empty
 from threading import Thread, Event
-import os
 
 class ThreadPool:
     def __init__(self):
-        self.num_threads = int(os.getenv('TP_NUM_OF_THREADS', os.cpu_count())) - 1
+        self.num_threads = int(os.getenv("TP_NUM_OF_THREADS", os.cpu_count())) - 1
         self.task_queue = Queue()
         self.threads = []
         self.jobs = {}
@@ -18,7 +18,7 @@ class ThreadPool:
         if self.no_more_jobs:
             return
         self.task_queue.put((task_id, task))
-        self.jobs[task_id] = 'running'
+        self.jobs[task_id] = "running"
 
     def get_task(self):
         try:
@@ -29,11 +29,11 @@ class ThreadPool:
             return None
 
     def init_threads(self):
-        for i in range(self.num_threads):
+        for _ in range(self.num_threads):
             thread = TaskRunner(self)
             self.threads.append(thread)
             thread.start()
-    
+
     def join_threads(self):
         for thread in self.threads:
             thread.join()
@@ -52,6 +52,6 @@ class TaskRunner(Thread):
                 continue
             task_id, task = task
             output_file = f"jobs/job{task_id}.json"
-            with open(output_file, "w") as f:
-                f.write(task())
-            self.pool.jobs[task_id] = 'done'
+            with open(output_file, "w", encoding="UTF-8") as file:
+                file.write(task())
+            self.pool.jobs[task_id] = "done"

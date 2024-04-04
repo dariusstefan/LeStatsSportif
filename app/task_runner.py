@@ -12,6 +12,8 @@ class ThreadPool:
         self.graceful_shutdown = Event()
         self.no_more_jobs = False
         os.makedirs("jobs", exist_ok=True)
+        for file in os.listdir("jobs"):
+            os.remove(f"jobs/{file}")
 
     def add_task(self, task_id, task):
         if self.no_more_jobs:
@@ -53,6 +55,4 @@ class TaskRunner(Thread):
             output_file = f"jobs/job{task_id}.json"
             with open(output_file, "w") as f:
                 f.write(task())
-            self.pool.jobs.update({task_id: 'done'})
-
-
+            self.pool.jobs[task_id] = 'done'

@@ -91,6 +91,8 @@ class DataIngestor:
         def state_mean_by_category():
             return (self.data.loc[(self.data['Question'] == question) & (self.data['LocationDesc'] == state)]
                     .groupby(['LocationDesc','StratificationCategory1','Stratification1'])['Data_Value']
-                    .mean().reset_index().pivot_table(index='LocationDesc', columns=['StratificationCategory1', 'Stratification1'], values='Data_Value')
-                    .to_json(orient='index', double_precision=14))
+                    .mean()
+                    .reset_index()
+                    .pivot_table(index='LocationDesc', columns=['StratificationCategory1', 'Stratification1'], values='Data_Value')
+                    .to_json(orient='index'))
         return state_mean_by_category

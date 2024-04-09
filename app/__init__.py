@@ -1,3 +1,6 @@
+""" This module initializes the webserver and sets up the logger, 
+the thread pool and the data ingestor. """
+
 import logging
 import logging.handlers
 import time
